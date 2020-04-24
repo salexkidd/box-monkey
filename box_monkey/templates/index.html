@@ -1,0 +1,29 @@
+{% extends "base.html" %}
+
+{% block styles %}
+<style>
+    .button-row { margin-top: 20px; }
+    .button-padding { margin-top: 20px; }
+    .btn-padding: { padding: 10px 10px 0 0 }
+
+    input::-webkit-outer-spin-button,
+    input::-webkit-inner-spin-button { -webkit-appearance: none; margin: 0; }
+
+    /* Firefox */
+    input[type=number] { -moz-appearance:textfield; }
+</style>
+{% endblock styles %}
+
+
+{% block scripts %}
+{% endblock scripts %}
+
+{% block content %}
+<div class="container">
+    <div class="row button-row">
+        <div class="col-md-12">
+            <a href="{{ url_for("start_3legged_oauth2") }}" class="btn btn-lg btn-warning btn-block mx-auto">For 3-legged OAuth2</a>
+        </div>
+    </div>
+</div>
+{% endblock content %}

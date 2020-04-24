@@ -1,0 +1,191 @@
+{% extends "base.html" %}
+
+{% block styles %}
+{{ super() }}
+<link rel="stylesheet" href="https://cdn01.boxcdn.net/platform/elements/{{ ui_element_version }}/en-US/picker.css" />
+<link href="https://pro.fontawesome.com/releases/v5.13.0/css/all.css" rel="stylesheet" >
+<style>
+    .vertical-center {
+        vertical-align: middle;
+    }
+
+    .icon-lg {
+        font-size: 25px;
+    }
+
+    .hide {
+        display: none
+    }
+
+    .status-icon {
+        font-size: 25px;
+    }
+
+    .process-list {
+        padding: 10px;
+    }
+
+
+</style>
+{% endblock %}
+
+{% block scripts %}
+{{ super() }}
+<script src="https://cdn.polyfill.io/v2/polyfill.min.js?features=es6,Intl"></script>
+<script src="https://cdn01.boxcdn.net/platform/elements/{{ ui_element_version }}/en-US/picker.js"></script>
+<script src="https://unpkg.com/sweetalert/dist/sweetalert.min.js"></script>
+
+<script src="https://cdn.jsdelivr.net/npm/vue@2.6.11"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.19.2/axios.min.js"></script>
+
+
+<script type="text/javascript">
+    const folderPicker = new Box.FolderPicker();
+
+    folderPicker.addListener('choose', function(items) {
+        swal({
+            title: "Are you sure?",
+            text: "Create a file and upgrade the version. This will take some time. Are we ready to begin?",
+            icon: "info",
+            buttons: true,
+            dangerMode: true,
+        })
+        .then((willCreate) => {
+            if (willCreate) {
+                // do something with the items array
+                $.ajax({
+                    url: "/start-upload-process",
+                    type: "POST",
+                    cache: false,
+                    data: JSON.stringify({"folder_id": items[0]["id"]}),
+                    dataType: 'json',
+                    contentType: "application/json; charset=utf-8",
+                })
+                .done( (data) => {
+                    swal("Accepted!", "The request has been accepted. Update the file in the backend and give it a version.", "success", {
+                        button: "OK",
+                    });
+                })
+                .fail((xhr, textStatus, e) => {
+                })
+            } else {
+            }
+        });
+    });
+
+    // Show the folder picker
+    folderPicker.show("0", "{{ box_access_token }}", {
+        container: '#box-picker-container',
+        maxSelectable: 1,
+        canUpload: false,
+        canSetShareAccess: false,
+        canCreateNewFolder: true,
+        chooseButtonLabel: "Take This!!!"
+    });
+
+    const getProcessResult = function() {
+        $.ajax("/process", {
+            type: "GET",
+            cache: false,
+            dataType: 'json',
+        })
+        .done( (data) => {
+            console.log(data)
+        })
+        .fail((xhr, textStatus, e) => {
+            console.log("omg!!!!!!!!!!")
+        })
+    }
+
+    const app = new Vue({
+        delimiters: ['[[', ']]'],
+        el: "#process-list-app",
+        props: [],
+        data: function() {
+            return {
+                "processList": [],
+                "intervalTimer": null,
+            }
+        },
+        computed: {},
+        created: function(){
+            this.intervalTimer = setInterval(this.getProcessList, 5000)
+        },
+        mounted: function(){
+            this.getProcessList()
+        },
+        methods: {
+            "getProcessList": function() {
+                axios.get("/process").then((response) => { this.processList = response.data })
+            },
+            "deleteProcess": function(folder_id) {
+                axios.delete("/process/" + folder_id ).then((response) => {
+                })
+                .catch(function(error){
+                    console.log(error)
+                })
+                .finally(function(){
+                    this.getProcessList()
+                })
+            },
+            "open": function(folderId) {
+                window.open("https://cloud.app.box.com/folder/" + folderId, "_blank")
+            }
+        },
+        template: `
+        <div>
+            <div class="row h-100 process-list" v-for="data in this.processList">
+
+                <div class="col-md-1 my-auto">
+                    <i class="icon-lg fa fa-spin fa-spinner" v-if="data.process_status == 'RUNNING'"></i>
+                    <i class="icon-lg fa fa-check-circle " v-if="data.process_status == 'COMPLETE' && data.result.status == 'success'"></i>
+                    <i class="icon-lg fa fa-exclamation-triangle " v-if="data.process_status == 'COMPLETE' && data.result.status == 'error'"></i>
+                </div>
+
+                <div class="col-md-7 my-auto" style="overflow: hidden">
+                    [[ data["process-uuid"] ]]
+                </div>
+
+                <!-- start button group -->
+                <div class="col-md-4 my-auto ">
+                    <div class="dropdown float-right">
+                        <button class="btn btn-secondary btn-sm dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            ...
+                        </button>
+                        <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+                        <a class="dropdown-item" href="javascript:void(0)" @click="deleteProcess(data['process-uuid'])">Delete</a>
+                        <a class="dropdown-item" href="javascript:void(0)" v-if="data.result != null && data.result.folder_id" @click="open(data.result.folder_id)">Open</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        `
+    })
+</script>
+{% endblock %}
+
+
+{% block content %}
+<div class="container-fluid w-75">
+    <div class="row ">
+        <div class="col-md-12">
+            <div class="row">
+                <div class="col-md-12">
+                </div>
+            </div>
+            <div class="row">
+                <div class="col-md-8">
+                    <div class="row">
+                        <div class="col-md-12">
+                            <div class="col-md-12" id="box-picker-container" style="height: 60vh"> </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="col-md-4 border process-list">
+                    <div id="process-list-app"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

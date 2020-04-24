@@ -1,0 +1,63 @@
+Bootstrap-Flask==1.2.0
+  Flask==1.1.2
+    click==7.1.1
+    itsdangerous==1.1.0
+    Jinja2==2.11.2
+      MarkupSafe==1.1.1
+    Werkzeug==1.0.1
+boxsdk==2.7.1
+  attrs==19.3.0
+  requests==2.23.0
+    certifi==2020.4.5.1
+    chardet==3.0.4
+    idna==2.9
+    urllib3==1.25.9
+  requests-toolbelt==0.9.1
+    requests==2.23.0
+      certifi==2020.4.5.1
+      chardet==3.0.4
+      idna==2.9
+      urllib3==1.25.9
+  six==1.14.0
+  wrapt==1.12.1
+cryptography==2.9
+  cffi==1.14.0
+    pycparser==2.20
+  six==1.14.0
+Flask-Executor==0.9.3
+  Flask==1.1.2
+    click==7.1.1
+    itsdangerous==1.1.0
+    Jinja2==2.11.2
+      MarkupSafe==1.1.1
+    Werkzeug==1.0.1
+Flask-Session==0.3.1
+  Flask==1.1.2
+    click==7.1.1
+    itsdangerous==1.1.0
+    Jinja2==2.11.2
+      MarkupSafe==1.1.1
+    Werkzeug==1.0.1
+ipdb==0.13.2
+  ipython==7.13.0
+    appnope==0.1.0
+    backcall==0.1.0
+    decorator==4.4.2
+    jedi==0.17.0
+      parso==0.7.0
+    pexpect==4.8.0
+      ptyprocess==0.6.0
+    pickleshare==0.7.5
+    prompt-toolkit==3.0.5
+      wcwidth==0.1.9
+    Pygments==2.6.1
+    setuptools==41.2.0
+    traitlets==4.3.3
+      decorator==4.4.2
+      ipython-genutils==0.2.0
+      six==1.14.0
+  setuptools==41.2.0
+pipdeptree==0.13.2
+  pip==20.0.2
+PyJWT==1.7.1
+redis==3.4.1

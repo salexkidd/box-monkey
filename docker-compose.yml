@@ -1,0 +1,35 @@
+version: '3.7'
+services:
+    redis:
+      restart: always
+      image: redis:5.0.4
+      volumes:
+        - ./docker-assets/data/redis:/data
+      command: redis-server --appendonly yes
+
+    main:
+      build: ./
+      environment:
+        FLASK_SECRET_KEY: <FLASK SECRET KEY. eg: ALL-YOUR-SECRET-ARE-BELONG-TO-US>
+        BOX_APP_CLIENT_ID: <YOUR BOX APPLICATION CLIENT ID>
+        BOX_APP_CLIENT_SECRET: <YOUR BOX APPLICATION CLIENT SECRET>
+        REDIS_HOST: redis
+        REDIS_PORT: 6379
+        DEBUG: "False"
+      tty: true
+
+      links:
+        - redis
+
+      depends_on:
+        - redis
+
+      ports:
+        - 5020:5000
+
+      volumes:
+        - ./box_monkey:/var/www
+        - ./docker-assets/config/main/entrypoint.sh:/tmp/entrypoint.sh
+
+      entrypoint:
+        - /tmp/entrypoint.sh

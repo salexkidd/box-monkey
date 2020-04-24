@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="ja">
+
+<head>
+    {% block header %}
+    <title>{{ title }}</title>
+    {% block metas %}
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    {% endblock metas %}
+
+    {{ bootstrap.load_css() }}
+
+    <style>
+        .flashes {
+            margin: 0px;
+            padding-left: 0px;
+            font-size: 20px;
+            list-style: none;
+        }
+
+        .flash-alert {
+            margin: 0px;
+            text-align: center;
+            align: center;
+            /* padding-left: 300px; */
+        }
+    </style>
+
+    {% block styles %}
+    {% endblock styles %}
+    {% endblock header %}
+</head>
+
+<body {% block body_attribs %}{% endblock body_attribs %}>
+    {% block body %}
+    <header>
+        <div class="collapse bg-dark" id="navbarHeader">
+            <div class="container">
+                <div class="row">
+                    <div class="col-sm-8 col-md-7 py-4">
+                        <h4 class="text-white">About</h4>
+                        <p class="text-muted">Add some information about the album below, the author, or any other background context. Make it a few sentences long so folks can pick up some informative tidbits. Then, link them off to some social networking sites or contact information.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="navbar navbar-dark bg-dark box-shadow">
+            <div class="container d-flex justify-content-between">
+                <a href="{{ url_for("index") }}" class="navbar-brand d-flex align-items-center">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" class="mr-2"><path d="M23 19a2 2 0 0 1-2 2H3a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h4l2-3h6l2 3h4a2 2 0 0 1 2 2z"></path><circle cx="12" cy="13" r="4"></circle></svg>
+                    <strong>{{ title }}</strong>
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <section>
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <ul class=flashes>
+            {% for category, message in messages %}
+            <li class="alert alert-{{ category }} flash-alert">{{ message }}</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+        {% endwith %}
+    </section>
+
+    <section class="jumbotron text-center">
+        <div class="container">
+            <h1 class="jumbotron-heading">{{ title }}</h1>
+            <p class="lead text-muted">I'm Upload monkey!!</p>
+        </div>
+    </section>
+
+    {% block content %}
+    {% endblock content %}
+
+    {{ bootstrap.load_js() }}
+
+    {% block scripts %}
+    {% endblock scripts %}
+
+    {% endblock body %}
+</body>
+</html>
